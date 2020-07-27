@@ -8,7 +8,7 @@
           <field name="inherit_id" ref="product.product_category_form_view"/>
           <field name="arch" type="xml">
 
-              <xpath expr="//field[@name='parent_id']" position="after">
+              <xpath expr="//group[@name='first']" position="after">
                   <group name="Comision">
                       <group>
                           <field name="comision_porc" placeholder="Ingrese el porcentaje de comision para las reparaciones"/>
