@@ -1,0 +1,37 @@
+<odoo>
+  <data>
+    <!-- Inherit Form View to Modify it -->
+    <record id="asvetec.view_repair_order_form" model="ir.ui.view">
+        <field name="name">asvetec.view.repair.order.form</field>
+        <field name="model">mrp.repair</field>
+        <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+              <notebook position="inside">
+                  <page string = "Tecnicos">
+                        <field name="lines_ids" nolabel="1">
+                            <tree>
+                                <field name="fecha_inicio"/>
+                                <field name="fecha_fin"/>
+                                <field name="employee_id"/>
+                                <field name="observacion"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="fecha_inicio"/>
+                                        <field name="fecha_fin"/>
+                                    </group>
+                                    <group>
+                                        <field name="employee_id"/>
+                                        <field name="observacion"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+
+                  </page>
+              </notebook>
+        </field>
+    </record>
+  </data>
+</odoo>
