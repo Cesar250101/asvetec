@@ -15,4 +15,10 @@ class NewModule(models.Model):
     fecha_fin = fields.Date(string="Fecha Fin", required=False, )
     employee_id = fields.Many2one(comodel_name="hr.employee", string="Empleado", required=False, )
     observacion = fields.Char(string="Observación", required=False, )
+    intervencion_porc = fields.Float(string="% de Intervención",  required=False, )
+
+class NewModule(models.Model):
+    _inherit = 'product.category'
+
+    comision_porc = fields.Float(string="Porcentaje de Comisión",  required=False, )
 

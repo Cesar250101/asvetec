@@ -1,5 +1,24 @@
 <odoo>
   <data>
+
+      <!-- Inherit Form View to Modify it -->
+      <record id="asvetec.product_category_form_view" model="ir.ui.view">
+          <field name="name">asvetec.product.category.form.view</field>
+          <field name="model">product.category</field>
+          <field name="inherit_id" ref="product.product_category_form_view"/>
+          <field name="arch" type="xml">
+
+              <xpath expr="//field[@name='parent_id']" position="after">
+                  <group name="Comision">
+                      <group>
+                          <field name="comision_porc" placeholder="Ingrese el porcentaje de comision para las reparaciones"/>
+                      </group>
+                  </group>
+              </xpath>
+
+          </field>
+      </record>
+
     <!-- Inherit Form View to Modify it -->
     <record id="asvetec.view_repair_order_form" model="ir.ui.view">
         <field name="name">asvetec.view.repair.order.form</field>
@@ -13,6 +32,7 @@
                                 <field name="fecha_inicio"/>
                                 <field name="fecha_fin"/>
                                 <field name="employee_id"/>
+                                <field name="intervencion_porc"/>
                                 <field name="observacion"/>
                             </tree>
                             <form>
@@ -23,6 +43,7 @@
                                     </group>
                                     <group>
                                         <field name="employee_id"/>
+                                        <field name="intervencion_porc"/>
                                         <field name="observacion"/>
                                     </group>
                                 </group>
