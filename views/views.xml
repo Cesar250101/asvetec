@@ -9,7 +9,7 @@
           <field name="arch" type="xml">
 
               <xpath expr="//field[@name='vehicle']" position="replace">
-                  <field name="vehicle"/>
+                  <field name="vehicle" attrs="{'required':[('use_documents', '=', True)], 'invisible':[('transport_type','!=','2')]}"/>
               </xpath>
 
           </field>
