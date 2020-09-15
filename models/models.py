@@ -4,6 +4,24 @@ from odoo import models, fields, api
 from datetime import datetime, date, time, timedelta
 
 
+class Picking(models.Model):
+    _inherit = 'stock.picking'
+
+    vehicle = fields.Selection(string='Vehículo',selection=[('camion', 'Camión'),('comioneta', 'Camioneta'), ('auto','Auto')],required=False,)
+
+    @api.onchange('vehicle')
+    def _setChofer(self):
+        return
+
+
+
+class Usuario(models.Model):
+    _inherit = 'res.users'
+
+    tipo_comision = fields.Selection(string='Tipo Comision',selection=[('taller', 'Taller'),('ventas', 'Ventas'),('ges_admin','Gestión Administrativa') ],required=False,)
+
+
+
 class Reparacion(models.Model):
     _inherit = 'mrp.repair'
 
@@ -44,32 +62,54 @@ class ComisionTecnico(models.Model):
         fecha_hasta = self.date_to
         hastaStr = datetime.strptime(fecha_hasta, '%Y-%m-%d')
         desdeStr = datetime.strptime(fecha_desde, '%Y-%m-%d')
-
-        domain = [
-            ('state', 'in', ['done']),
-            ('lines_ids.employee_id', '=', self.employee_id.id),
-            ('create_date', '>=', fecha_desde),
-            ('create_date', '<=', fecha_hasta)
-        ]
-
-        ordenes_reparacion = self.env['mrp.repair'].search(domain)
-        ids_ordenes = []
-        for i in ordenes_reparacion:
-            ids_ordenes.append(i.id)
-
-        domain = [
-            ('repair_id', 'in', ids_ordenes),
-        ]
-        ordenes_reparacion_lineas=self.env['mrp.repair.line'].search(domain)
-
-        comision=0
-        for i in ordenes_reparacion_lineas:
+        comision = 0
+        if  self.employee_id.user_id.tipo_comision=="taller":
             domain = [
-                ('repair_id', '=', i.repair_id.id),
-                ('employee_id', '=', self.employee_id.id)
+                ('state', 'in', ['done']),
+                ('lines_ids.employee_id', '=', self.employee_id.id),
+                ('create_date', '>=', fecha_desde),
+                ('create_date', '<=', fecha_hasta)
             ]
-            porc_participacion = self.env['asvetec.asignacion'].search(domain,limit=1).intervencion_porc
-            comision += i.price_subtotal*(i.product_id.product_tmpl_id.categ_id.comision_porc/100)*(porc_participacion/100)
+
+            ordenes_reparacion = self.env['mrp.repair'].search(domain)
+            ids_ordenes = []
+            for i in ordenes_reparacion:
+                ids_ordenes.append(i.id)
+
+            domain = [
+                ('repair_id', 'in', ids_ordenes),
+            ]
+            ordenes_reparacion_lineas=self.env['mrp.repair.line'].search(domain)
+
+            for i in ordenes_reparacion_lineas:
+                domain = [
+                    ('repair_id', '=', i.repair_id.id),
+                    ('employee_id', '=', self.employee_id.id)
+                ]
+                porc_participacion = self.env['asvetec.asignacion'].search(domain,limit=1).intervencion_porc
+                comision += i.price_subtotal*(i.product_id.product_tmpl_id.categ_id.comision_porc/100)*(porc_participacion/100)
+        elif self.employee_id.user_id.tipo_comision=="ventas":
+            domain = [
+                ('state', 'in', ['open','paid']),
+                ('user_id', '=', self.employee_id.user_id.id),
+                ('date_invoice', '>=', fecha_desde),
+                ('date_invoice', '<=', fecha_hasta)
+            ]
+
+            facturas = self.env['account.invoice'].search(domain)
+            for f in facturas:
+                comision+=round(f.amount_untaxed*0.05)
+        elif self.employee_id.user_id.tipo_comision=="ges_admin":
+            domain = [
+                ('state', 'in', ['open','paid']),
+                ('date_invoice', '>=', fecha_desde),
+                ('date_invoice', '<=', fecha_hasta),
+                ('partner_id.ges_admin','=',True)
+            ]
+
+            facturas = self.env['account.invoice'].search(domain)
+            for f in facturas:
+                comision+=round(f.amount_untaxed*0.01)
         payslip = self.env['hr.payslip.input'].search([('code', '=', 'COMI'),('contract_id','=',contrato_id.id),('payslip_id','=',self.id)])
         payslip.write({'amount': comision})
         return True
