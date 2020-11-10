@@ -4,6 +4,14 @@ from odoo import models, fields, api
 from datetime import datetime, date, time, timedelta
 
 
+class Facturas(models.Model):
+    _inherit = 'account.invoice'
+
+    document_number = fields.Char(
+        string='Rut',related="partner_id.document_number",
+        required=False)
+
+
 class Picking(models.Model):
     _inherit = 'stock.picking'
 
