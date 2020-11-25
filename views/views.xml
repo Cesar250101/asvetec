@@ -23,10 +23,6 @@
               <xpath expr="//field[@name='journal_id']" position="after">
                   <field name="document_number" />
               </xpath>
-              <xpath expr="//field[@name='group_by_partner_id']" position="after">
-                  <filter name="document_number" string="Rut" context="{'group_by':'document_number'}"/>
-              </xpath>
-
           </field>
       </record>
 
