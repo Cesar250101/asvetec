@@ -39,14 +39,14 @@ class Usuario(models.Model):
 
 
 class Reparacion(models.Model):
-    _inherit = 'mrp.repair'
+    _inherit = 'repair.order'
 
     lines_ids = fields.One2many(comodel_name="asvetec.asignacion", inverse_name="repair_id", string="Lineas", required=False, )
 
 class Asignacion(models.Model):
     _name = 'asvetec.asignacion'
 
-    repair_id = fields.Many2one(comodel_name="mrp.repair", string="Líneas Detalle", required=False, )
+    repair_id = fields.Many2one(comodel_name="repair.order", string="Líneas Detalle", required=False, )
     fecha_inicio = fields.Date(string="Fecha Inicio", required=True, )
     fecha_fin = fields.Date(string="Fecha Fin", required=False, )
     employee_id = fields.Many2one(comodel_name="hr.employee", string="Empleado", required=False, )
@@ -87,7 +87,7 @@ class ComisionTecnico(models.Model):
                 ('create_date', '<=', fecha_hasta)
             ]
 
-            ordenes_reparacion = self.env['mrp.repair'].search(domain)
+            ordenes_reparacion = self.env['repair.order'].search(domain)
             ids_ordenes = []
             for i in ordenes_reparacion:
                 ids_ordenes.append(i.id)
@@ -95,7 +95,7 @@ class ComisionTecnico(models.Model):
             domain = [
                 ('repair_id', 'in', ids_ordenes),
             ]
-            ordenes_reparacion_lineas=self.env['mrp.repair.line'].search(domain)
+            ordenes_reparacion_lineas=self.env['repair.order.line'].search(domain)
 
             for i in ordenes_reparacion_lineas:
                 domain = [

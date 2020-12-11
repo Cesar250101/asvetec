@@ -21,7 +21,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mrp_repair','hr','sale','l10n_cl_stock_picking',],
+    'depends': ['base','mrp','hr','sale','l10n_cl_stock_picking',],
 
     # always loaded
     'data': [
