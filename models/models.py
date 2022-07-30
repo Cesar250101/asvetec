@@ -12,14 +12,6 @@ class Facturas(models.Model):
         required=False)
 
 
-class Facturas(models.Model):
-    _inherit = 'account.invoice'
-
-    document_number = fields.Char(
-        string='Rut',related="partner_id.document_number",store=True,
-        required=False)
-
-
 class Picking(models.Model):
     _inherit = 'stock.picking'
 
